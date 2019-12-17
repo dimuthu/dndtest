@@ -1,18 +1,24 @@
-import React from 'react';
+import React from "react";
+import HTML5Backend from "react-dnd-html5-backend";
+import { DndProvider } from "react-dnd";
+import DataDesigner from "../datadesigner/DataDesigner";
+
 import "bootstrap/dist/css/bootstrap.css";
-import './App.css';
+import "./App.css";
 
 function App() {
   return (
-    <div className="App">
-      <div class="container">
-        <div class="row">
-          <div class="col-sm">
-
+    <DndProvider backend={HTML5Backend}>
+      <div className="App">
+        <div className="container">
+          <div className="row">
+            <div className="col-sm">
+              <DataDesigner />
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </DndProvider>
   );
 }
 

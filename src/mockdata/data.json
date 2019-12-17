@@ -1,0 +1,78 @@
+{
+  "dataSources": [
+    {
+      "id": "F5C12D03-325F-48A4-9BB0-171ACA5879A6",
+      "name": "Part",
+      "dataFields": [
+        {
+          "id": "F2ACBE4D-EDE5-496F-BA2E-D444F703C36F",
+          "name": "partkey"
+        },
+        {
+          "id": "68CD22FB-EC35-4D0A-B72B-BD1D6CF69080",
+          "name": "mfgr"
+        },
+        {
+          "id": "EC720477-074C-4532-B691-5C751FFEC2E5",
+          "name": "category"
+        },
+        {
+          "id": "8D6A271D-8E72-4483-9C74-8CDED1387F97",
+          "name": "color"
+        },
+        {
+          "id": "15451DAD-A6DB-44D0-92E3-4760C4667411",
+          "name": "type"
+        },
+        {
+          "id": "9982CB4D-DABF-41CE-878B-06C431D0294E",
+          "name": "size"
+        }
+      ]
+    },
+    {
+      "id": "76FE9BDA-42B3-4FF8-A728-6DCAD0AA0FFB",
+      "name": "Customer",
+      "dataFields": [
+        {
+          "id": "3D8C412F-A4A7-4C87-B6BE-CA20B3B9B07F",
+          "name": "customerkey"
+        },
+        {
+          "id": "1DBA136A-51B4-4802-9978-8E2A31D5E486",
+          "name": "name"
+        },
+        {
+          "id": "9298B565-5A6D-4324-899D-99B3C5FCF910",
+          "name": "address"
+        },
+        {
+          "id": "B5950186-C4A2-4FC1-B14A-D24E3203DAB3",
+          "name": "city"
+        }
+      ]
+    },
+    {
+      "id": "532A0089-A1D5-4D6D-AAF4-86714184FA3A",
+      "name": "Line Orders",
+      "dataFields": [
+        {
+          "id": "85463966-7D0F-43F1-AA76-5C480A38D69F",
+          "name": "lineorderkey"
+        },
+        {
+          "id": "5C4CDEDA-5475-4D51-8220-81DA974CECEA",
+          "name": "linenumber"
+        },
+        {
+          "id": "4E8BA5EF-3BB3-4B25-9BF6-21C13BDBE7B5",
+          "name": "customerkey"
+        },
+        {
+          "id": "627ECF4E-E441-48D6-9B69-AE805616672D",
+          "name": "partkey"
+        }
+      ]
+    }
+  ]
+}
