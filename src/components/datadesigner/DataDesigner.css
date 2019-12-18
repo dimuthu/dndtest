@@ -1,11 +1,23 @@
 .data-designer {
   position: relative;
-  width: 100%;
-  height: 800px;
   background: #e7e7e7;
 }
 
-.data-designer .data-source {
+.link-canvas {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.data-designer-canvas {
+  position: relative;
+  width: 100%;
+  height: 800px;
+}
+
+.data-designer-canvas .data-source {
   width: 200px;
   position: absolute;
 }

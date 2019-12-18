@@ -20,7 +20,6 @@ const DataField = ({ index, id, name, setRelationship, parentId }) => {
         if (item.id === id) {
           return;
         }
-      console.log("item", item);
 
       setRelationship(
         { type: ItemTypes.DATA_FIELD, index, id, ref, parentId },
