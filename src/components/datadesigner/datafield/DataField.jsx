@@ -22,8 +22,8 @@ const DataField = ({ index, id, name, setRelationship, parentId }) => {
         }
 
       setRelationship(
-        { type: ItemTypes.DATA_FIELD, index, id, ref, parentId },
-        item
+        { type: ItemTypes.DATA_FIELD, index, id, ref: ref.current, parentId },
+        { type: ItemTypes.DATA_FIELD, index, id, ref: item.ref.current, parentId }
       );
     }
   });

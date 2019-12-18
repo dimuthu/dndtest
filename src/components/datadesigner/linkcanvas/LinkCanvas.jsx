@@ -1,9 +1,8 @@
 import React, { useEffect } from "react";
 import Path from "paths-js/path";
-import * as _ from "lodash";
 import { getPathCords } from "./helper";
 
-const LinkCanvas = ({ sources, relationships }) => {
+const LinkCanvas = ({ sources, relationships, container }) => {
   var path = Path()
     .moveto(10, 20)
     .lineto(60, 70)
@@ -11,11 +10,8 @@ const LinkCanvas = ({ sources, relationships }) => {
 
   useEffect(() => {
     const drawRelationships = () => {
-      _.each(relationships, item => {
-        getPathCords(item);
-      });
+      getPathCords(relationships, container);
     };
-
     drawRelationships();
   }, [sources, relationships]);
 
