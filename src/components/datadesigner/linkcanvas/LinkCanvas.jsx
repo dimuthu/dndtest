@@ -1,23 +1,33 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Path from "paths-js/path";
+import * as _ from "lodash";
 import { getPathCords } from "./helper";
 
 const LinkCanvas = ({ sources, relationships, container }) => {
-  var path = Path()
-    .moveto(10, 20)
-    .lineto(60, 70)
-    .lineto(75, 205);
+  const [paths, setPaths] = useState([]);
 
   useEffect(() => {
     const drawRelationships = () => {
-      getPathCords(relationships, container);
+      const pathCords = getPathCords(relationships, container);
+      const pathList = [];
+      let key = 0;
+      _.each(pathCords, pathCord => {
+        let path = Path()
+          .moveto(pathCord[0].left, pathCord[0].top)
+          .lineto(pathCord[1].left, pathCord[1].top);
+        pathList.push({ id: key++, path: path.print() });
+      });
+      setPaths(pathList);
     };
     drawRelationships();
-  }, [sources, relationships]);
+  }, [sources, relationships, container]);
 
   return (
     <svg className="link-canvas" width="100%" height="100%">
-      <path d={path.print()} fillOpacity="0.0" stroke="black" />
+      {paths &&
+        paths.map(path => (
+          <path key={path.id} d={path.path} fillOpacity="0.0" stroke="black" />
+        ))}
     </svg>
   );
 };

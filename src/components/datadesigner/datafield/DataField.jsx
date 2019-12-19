@@ -22,8 +22,11 @@ const DataField = ({ index, id, name, setRelationship, parentId }) => {
         }
 
       setRelationship(
-        { type: ItemTypes.DATA_FIELD, index, id, ref: ref.current, parentId },
-        { type: ItemTypes.DATA_FIELD, index, id, ref: item.ref.current, parentId }
+        { id, parentId },
+        {
+          id: item.id,
+          parentId: item.parentId
+        }
       );
     }
   });
@@ -37,7 +40,7 @@ const DataField = ({ index, id, name, setRelationship, parentId }) => {
   drag(drop(ref));
 
   return (
-    <li ref={ref} className="list-group-item">
+    <li ref={ref} className={`list-group-item field-${id}`}>
       {name}
     </li>
   );

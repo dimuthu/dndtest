@@ -23,7 +23,11 @@ const DataSource = ({
     return <div ref={drag} />;
   }
   return (
-    <div className="data-source" ref={drag} style={{ left, top }}>
+    <div
+      className={`data-source source-${uid}`}
+      ref={drag}
+      style={{ left, top }}
+    >
       <div className="card">
         <div className="card-header">{name}</div>
         <ul className="list-group list-group-flush">
