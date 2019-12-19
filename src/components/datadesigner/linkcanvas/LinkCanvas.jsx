@@ -12,14 +12,20 @@ const LinkCanvas = ({ sources, relationships, container }) => {
       const pathList = [];
       let key = 0;
       _.each(pathCords, pathCord => {
-        let path = Path()
-          .moveto(pathCord[0].left, pathCord[0].top)
-          .lineto(pathCord[1].left, pathCord[1].top);
-        pathList.push({ id: key++, path: path.print() });
+        if(pathCord.length > 1){
+          let path = Path().moveto(pathCord[0][0], pathCord[0][1]);
+          for (let i = 1; i < pathCord.length; i++) {
+            path = path.lineto(pathCord[i][0], pathCord[i][1]);
+          }
+          pathList.push({ id: key++, path: path.print() });
+        }
       });
       setPaths(pathList);
     };
-    drawRelationships();
+    setTimeout(() => {
+      drawRelationships();
+    }, 100);
+
   }, [sources, relationships, container]);
 
   return (

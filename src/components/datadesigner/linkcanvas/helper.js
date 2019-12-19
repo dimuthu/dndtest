@@ -9,6 +9,18 @@ const getRelationshipCords = (items, container) => {
   const scrollPos = getScrollPosition();
   const containerPos = getOffset(container, scrollPos);
   const relationshipCords = [];
+  const dataSources = container.querySelectorAll(".data-source");
+  const blockedRegions = getBlockedRegions(
+    dataSources,
+    scrollPos,
+    containerPos
+  );
+  const matrix = generateMatrix(
+    containerPos.width,
+    containerPos.height,
+    blockedRegions
+  );
+
   _.each(items, item => {
     var inItemMatches = container.querySelectorAll(`.field-${item.inItem.id}`);
     var outItemMatches = container.querySelectorAll(
@@ -23,10 +35,29 @@ const getRelationshipCords = (items, container) => {
         getOffset(outItemMatches[0], scrollPos),
         containerPos
       );
-      relationshipCords.push(getAnchorPoints(inItemPos, outItemPos));
+      let grid = new PF.Grid(matrix);
+      let finder = new PF.BiBestFirstFinder();
+      const anchorPoints = getAnchorPoints(inItemPos, outItemPos);
+      console.log(anchorPoints);
+      let path = finder.findPath(
+        anchorPoints[0].left,
+        anchorPoints[0].top,
+        anchorPoints[1].left,
+        anchorPoints[1].top,
+        grid
+      );
+      // let path = finder.findPath(
+      //   800,
+      //   100,
+      //   499,
+      //   370,
+      //   grid
+      // );
+      path = PF.Util.compressPath(path);
+      relationshipCords.push(path);
     }
   });
-  console.log(generateMatrix(containerPos.width, containerPos.height));
+  console.log(relationshipCords);
   return relationshipCords;
 };
 
@@ -59,37 +90,62 @@ const getAnchorPoints = (element1, element2) => {
   if (element1.left < element2.left) {
     return [
       {
-        top: element1.top + element1.height / 2,
-        left: element1.left + element1.width
+        top: element1.top + Math.trunc(element1.height / 2),
+        left: element1.left + element1.width + 10
       },
-      { top: element2.top + element2.height / 2, left: element2.left }
+      { top: element2.top + Math.trunc(element2.height / 2), left: element2.left - 10 }
     ];
   }
   return [
     {
-      top: element1.top + element1.height / 2,
-      left: element1.left
+      top: element1.top + Math.trunc(element1.height / 2),
+      left: element1.left - 10
     },
     {
-      top: element2.top + element2.height / 2,
-      left: element2.left + element2.width
+      top: element2.top + Math.trunc(element2.height / 2),
+      left: element2.left + element2.width + 10
     }
   ];
 };
 
-const generateMatrix = (width, height) => {
-  var matrix = getEmptyMatrix([width, height]);
+const generateMatrix = (width, height, blockedRegions) => {
+  //console.log(width, height);
+  let matrix = getEmptyMatrix(height, width);
+  _.each(blockedRegions, region => {
+    for(let i = region.left; i <= region.right; i++){
+      for(let j = region.top; j <= region.bottom; j++){
+        console.log(i, j)
+        if (i < width && j < height) matrix[i][j] = 1;
+      }
+    }
+  });
   return matrix;
 };
 
-const getEmptyMatrix = dimensions => {
-  var array = [];
+const getEmptyMatrix = (width, height) => {
+  let array = [];
 
-  for (var i = 0; i < dimensions[0]; ++i) {
-    array.push(
-      dimensions.length === 1 ? 0 : getEmptyMatrix(dimensions.slice(1))
-    );
+  let rowArray = [];
+  for (let row = 0; row < width; row++) {
+    rowArray = [];
+    for (let col = 0; col < height; col++) {
+      rowArray.push(0);
+    }
+    array.push(rowArray);
   }
 
   return array;
+};
+
+const getBlockedRegions = (elements, scrollPosition, containerPos) => {
+  const regions = [];
+  if(elements.length > 0){
+    _.each(elements, element => {
+      const elOffset = getOffset(element, scrollPosition);
+      const elPos = getRelativePosition(elOffset, containerPos);
+      regions.push({top: elPos.top, right: elPos.left + elPos.width, bottom: elPos.top + elPos.height, left: elPos.left});
+    });
+    return regions;
+  }
+  return [];
 };
