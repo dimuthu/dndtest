@@ -1,5 +1,6 @@
 import * as _ from "lodash";
 import PF from "pathfinding";
+export const SCALING_FACTOR = 5;
 
 export const getPathCords = (items, container) => {
   return getRelationshipCords(items, container.current);
@@ -36,28 +37,33 @@ const getRelationshipCords = (items, container) => {
         containerPos
       );
       let grid = new PF.Grid(matrix);
-      let finder = new PF.BiBestFirstFinder();
+      let finder = new PF.JumpPointFinder({
+        heuristic: PF.Heuristic.manhattan,
+        diagonalMovement: PF.DiagonalMovement.Never
+      });
       const anchorPoints = getAnchorPoints(inItemPos, outItemPos);
-      console.log(anchorPoints);
       let path = finder.findPath(
-        anchorPoints[0].left,
-        anchorPoints[0].top,
-        anchorPoints[1].left,
-        anchorPoints[1].top,
+        Math.floor(anchorPoints[0].left / SCALING_FACTOR),
+        Math.floor(anchorPoints[0].top / SCALING_FACTOR),
+        Math.floor(anchorPoints[1].left / SCALING_FACTOR),
+        Math.floor(anchorPoints[1].top / SCALING_FACTOR),
         grid
       );
-      // let path = finder.findPath(
-      //   800,
-      //   100,
-      //   499,
-      //   370,
-      //   grid
-      // );
       path = PF.Util.compressPath(path);
+      path = [
+        [
+          Math.floor(anchorPoints[0].origLeft / SCALING_FACTOR),
+          Math.floor(anchorPoints[0].top / SCALING_FACTOR)
+        ],
+        ...path,
+        [
+          Math.floor(anchorPoints[1].origLeft / SCALING_FACTOR),
+          Math.floor(anchorPoints[1].top / SCALING_FACTOR)
+        ]
+      ];
       relationshipCords.push(path);
     }
   });
-  console.log(relationshipCords);
   return relationshipCords;
 };
 
@@ -90,32 +96,50 @@ const getAnchorPoints = (element1, element2) => {
   if (element1.left < element2.left) {
     return [
       {
-        top: element1.top + Math.trunc(element1.height / 2),
-        left: element1.left + element1.width + 10
+        top: element1.top + Math.floor(element1.height / 2),
+        left: element1.left + element1.width + 20,
+        origLeft: element1.left + element1.width + 5
       },
-      { top: element2.top + Math.trunc(element2.height / 2), left: element2.left - 10 }
+      {
+        top: element2.top + Math.floor(element2.height / 2),
+        left: element2.left - 20,
+        origLeft: element2.left - 5
+      }
     ];
   }
   return [
     {
-      top: element1.top + Math.trunc(element1.height / 2),
-      left: element1.left - 10
+      top: element1.top + Math.floor(element1.height / 2),
+      left: element1.left - 20,
+      origLeft: element1.left - 5
     },
     {
-      top: element2.top + Math.trunc(element2.height / 2),
-      left: element2.left + element2.width + 10
+      top: element2.top + Math.floor(element2.height / 2),
+      left: element2.left + element2.width + 20,
+      origLeft: element2.left + element2.width + 5
     }
   ];
 };
 
 const generateMatrix = (width, height, blockedRegions) => {
-  //console.log(width, height);
-  let matrix = getEmptyMatrix(height, width);
+  let matrix = getEmptyMatrix(
+    Math.floor(width / SCALING_FACTOR),
+    Math.floor(height / SCALING_FACTOR)
+  );
   _.each(blockedRegions, region => {
-    for(let i = region.left; i <= region.right; i++){
-      for(let j = region.top; j <= region.bottom; j++){
-        console.log(i, j)
-        if (i < width && j < height) matrix[i][j] = 1;
+    for (
+      let i = Math.floor(region.left / SCALING_FACTOR);
+      i <= Math.floor(region.right / SCALING_FACTOR);
+      i++
+    ) {
+      for (
+        let j = Math.floor(region.top / SCALING_FACTOR);
+        j <= Math.floor(region.bottom / SCALING_FACTOR);
+        j++
+      ) {
+        if (matrix[j] !== undefined && matrix[j][i] !== undefined)
+          matrix[j][i] = 1;
+        else console.log(i, j);
       }
     }
   });
@@ -126,9 +150,9 @@ const getEmptyMatrix = (width, height) => {
   let array = [];
 
   let rowArray = [];
-  for (let row = 0; row < width; row++) {
+  for (let row = 0; row < height; row++) {
     rowArray = [];
-    for (let col = 0; col < height; col++) {
+    for (let col = 0; col < width; col++) {
       rowArray.push(0);
     }
     array.push(rowArray);
@@ -139,11 +163,16 @@ const getEmptyMatrix = (width, height) => {
 
 const getBlockedRegions = (elements, scrollPosition, containerPos) => {
   const regions = [];
-  if(elements.length > 0){
+  if (elements.length > 0) {
     _.each(elements, element => {
       const elOffset = getOffset(element, scrollPosition);
       const elPos = getRelativePosition(elOffset, containerPos);
-      regions.push({top: elPos.top, right: elPos.left + elPos.width, bottom: elPos.top + elPos.height, left: elPos.left});
+      regions.push({
+        top: elPos.top,
+        right: elPos.left + elPos.width,
+        bottom: elPos.top + elPos.height,
+        left: elPos.left
+      });
     });
     return regions;
   }

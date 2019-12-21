@@ -31,7 +31,7 @@ const DataField = ({ index, id, name, setRelationship, parentId }) => {
     }
   });
 
-  const [{ isDragging }, drag] = useDrag({
+  const [, drag] = useDrag({
     item: { type: ItemTypes.DATA_FIELD, index, id, ref, parentId },
     collect: monitor => ({
       isDragging: monitor.isDragging()

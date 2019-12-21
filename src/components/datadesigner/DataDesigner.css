@@ -1,6 +1,7 @@
 .data-designer {
   position: relative;
   background: #e7e7e7;
+  text-align: left;
 }
 
 .link-canvas {
@@ -9,6 +10,15 @@
   top: 0;
   width: 100%;
   height: 100%;
+  pointer-events: none;
+}
+
+.link-canvas path {
+  pointer-events: all;
+}
+
+.link-canvas path.selected {
+  stroke: blue;
 }
 
 .data-designer-canvas {
@@ -20,4 +30,12 @@
 .data-designer-canvas .data-source {
   width: 200px;
   position: absolute;
+}
+
+.data-designer .data-source .list-group-item {
+  color: #8c8c8c;
+}
+
+.button-wrapper {
+  padding: 20px;
 }
